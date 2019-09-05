@@ -15,7 +15,7 @@ import sys
 
 
 class Parser:
-    _data = {}
+    _data = None
     @classmethod
     def saveToFile(cls, output):
         with open(output, 'w') as fp:
@@ -33,7 +33,7 @@ class Parser:
 
     @classmethod
     def getOnlineJson(cls, url, message="<message>"):
-        print("Requesting JSON data:", message, file=sys.stderr)
+        #print("Requesting JSON data:", message, file=sys.stderr)
         data = eval( urllib.request.urlopen(url).read() )
         return data
     @classmethod

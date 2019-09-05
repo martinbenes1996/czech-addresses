@@ -59,6 +59,49 @@ class Obce(Parser):
     
     @classmethod
     def get(cls, obec=None, kraj=None):
+
+        # listing
+        if obec is None:
+            if kraj is None: # !obec & !kraj
+                return cls._data
+            else: # !obec & kraj
+                return cls._data[Kraje.id(kraj)]
+        # searching
+        else:
+            domains = Kraje.get()
+            if kraj is not None: # obec & kraj
+                domains = [Kraje.id(kraj)]
+            print("domains", domains, "because kraj is", kraj)
+            print("obec is",obec)
+
+            if isinstance(obec,str) or isinstance(obec,int):
+                try:
+                    obec = int(obec)
+                except: # obecName
+                    result = []
+                    for d in domains: # forall kraje (domains)
+                        for k,v in cls._data[d].items():
+                            if cls.deDiacriticize(v.lower()) == cls.deDiacriticize(obec.lower()):
+                                result.append(k)
+                    if len(result) > 0:
+                        return result
+                else: # obecId
+                    for d in domains: # forall kraje (domains)
+                        try:
+                            return cls._data[d][obec]
+                        except KeyError:
+                            pass
+                finally:
+                    raise KeyError
+
+            raise TypeError
+            
+
+
+
+
+
+
         with open('data/obce.json','r') as f:
             obce = cls.parseIntKeys( json.load(f) ) # all obce
             print(obce[1])
@@ -89,9 +132,9 @@ class Obce(Parser):
                         if cls.deDiacriticize(obecName.lower()) == cls.deDiacriticize(obec.lower()):
                             obceOfName.append(obecID)
                 return obceOfName
-
             return KeyError
         raise KeyError
+
     def __getitem__(self, obec):
         if isinstance(obec, int):
             return self._data[obec]

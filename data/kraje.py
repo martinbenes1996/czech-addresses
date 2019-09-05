@@ -12,6 +12,7 @@ class Kraje(Parser):
     def readFromFile(cls):
         with open('data/kraje.json','r') as f:
             cls._data = cls.parseIntKeys( json.load(f) )
+            return cls._data
     @classmethod
     def saveToFile(cls, output="data/kraje.json"):
         super().saveToFile(output)
@@ -20,21 +21,32 @@ class Kraje(Parser):
     def get(cls, key=None):
         if key == None:
             return cls._data
-        elif isinstance(key,str):
-            for k,v in cls._data.items():
-                if cls.deDiacriticize(v.lower()) == cls.deDiacriticize(key.lower()):
-                    return k
-        elif isinstance(key,int):
+        
+        elif isinstance(key, str):
+            try:
+                key = int(key)
+            except:
+                for k,v in cls._data.items():
+                    if cls.deDiacriticize(v.lower()) == cls.deDiacriticize(key.lower()):
+                        return k
+        
+        if isinstance(key, int):
             return cls._data[key]
+        
         raise KeyError
+
     def __getitem__(self, key):
         return self.get(key)  
+
     @classmethod
     def id(cls, key):
-        if isinstance(key,int) and key in cls._data.keys():
-            return key
-        elif isinstance(key,str):
+        try:
+            key = int(key)
+        except:
             return cls.get(key)
+        else:
+            if key in cls._data.keys():
+                return key
         raise TypeError
     
     @classmethod
