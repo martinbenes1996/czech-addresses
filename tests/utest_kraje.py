@@ -54,11 +54,6 @@ class UTest_Kraje(utest.UTest):
         for kraj in self._kraje:
             assert(kraj in v)
                 
-
-
-    def __init__(self, offline=False):
-        super().__init__()
-        self.offline = offline
     
     def run(self):
         self.perform("instantitation", self.instantiate)

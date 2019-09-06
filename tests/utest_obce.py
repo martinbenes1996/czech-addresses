@@ -67,12 +67,6 @@ class UTest_Obce(utest.UTest):
     def search_kraj(self):
         pass
                 
-            
-
-
-    def __init__(self, offline=False):
-        super().__init__()
-        self.offline = offline
     
     def run(self):
         self.perform("instantitation", self.instantiate)

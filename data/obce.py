@@ -95,45 +95,6 @@ class Obce(Parser):
                     raise KeyError
 
             raise TypeError
-            
-
-
-
-
-
-
-        with open('data/obce.json','r') as f:
-            obce = cls.parseIntKeys( json.load(f) ) # all obce
-            print(obce[1])
-            if obec == None:
-                if kraj == None:
-                    return obce
-                else:
-                    return obce[Kraje.id(kraj)]
-                    
-            elif isinstance(obec,int): # obec ID
-                kraje = Kraje()
-                if kraj is not None:
-                    kraje = Kraje.get(kraj)
-                for kraj in kraje:
-                    try:
-                        return obce[kraj][obec]
-                    except:
-                        pass
-                    else:
-                        raise KeyError
-            elif isinstance(obec, str): # obec name
-                obceOfName = []
-                kraje = Kraje()
-                if kraj is not None:
-                    kraje = Kraje.get(kraj)
-                for kraj in kraje:
-                    for obecID, obecName in obce[kraj].items():
-                        if cls.deDiacriticize(obecName.lower()) == cls.deDiacriticize(obec.lower()):
-                            obceOfName.append(obecID)
-                return obceOfName
-            return KeyError
-        raise KeyError
 
     def __getitem__(self, obec):
         if isinstance(obec, int):

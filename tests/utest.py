@@ -11,8 +11,9 @@ class UTest:
 
     def __del__(self):
         self.listErrorMessages()
-    def __init__(self):
+    def __init__(self, offline=False):
         self.status = True
+        self.offline = offline
 
     @classmethod
     def perform(cls, name, procedure):
