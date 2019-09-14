@@ -1,11 +1,9 @@
 
-
-
 import json
 
-from parser import *
-from kraje import *
-from obce import *
+from data.parser import *
+from data.kraje import *
+from data.obce import *
 
 class Ctvrti(Parser):
     @classmethod

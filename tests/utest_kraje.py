@@ -1,12 +1,10 @@
 
 import json
 import random
-import sys
 
 import utest
 
-sys.path.insert(0, './data')
-from kraje import *
+from data.kraje import *
 
 class UTest_Kraje(utest.UTest):
     def instantiate(self):

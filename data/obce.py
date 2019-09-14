@@ -1,8 +1,8 @@
 
-import json
+import json 
 
-from parser import *
-from kraje import *
+from data.parser import *
+from data.kraje import *
 
 class Obce(Parser):
     @classmethod

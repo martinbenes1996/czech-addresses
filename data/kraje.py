@@ -1,7 +1,10 @@
 
 import json
 
-from parser import *
+from data.parser import *
+import parser
+print("parser imported successfully")
+print(parser)
 
 class Kraje(Parser):
     @classmethod

@@ -1,4 +1,7 @@
 
+import sys
+
+sys.path.append(".")
 from utest_kraje import *
 from utest_obce import *
 from utest_ctvrti import *

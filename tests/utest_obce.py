@@ -1,13 +1,11 @@
 
 import json
 import random
-import sys
 
 import utest
 
-sys.path.insert(0, './data')
-from obce import *
-from kraje import *
+from data.obce import *
+from data.kraje import *
 
 class UTest_Obce(utest.UTest):
     def instantiate(self):
