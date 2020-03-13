@@ -27,8 +27,8 @@ import psc
 def index():
     return render_template("index.html")
 
-@app.route("/osobni/<int:pagenum>")
-def tax_private(pagenum):
+@app.route("/kraje")
+def kraje():
     if pagenum < 1 or pagenum > 3:
         abort(404)
     
@@ -38,15 +38,6 @@ def tax_private(pagenum):
         regions = address_getRegions()
 
     return render_template("tax_private.html", pagenum=pagenum, regions=regions)
-
-@app.route("/firemni/<int:pagenum>")
-def tax_business(pagenum):
-    return render_template("tax_business.html", pagenum=pagenum)
-
-@app.route("/profile")
-def show_profile():
-    return render_template("profile.html", username="Foo")
-
 
 # address api
 @app.route("/address/getCityCode/<string:cityName>/<int:regionId>")
@@ -180,10 +171,6 @@ def address_checkAddress(cityCode, streetName, houseNumber):
 
     abort(404)
     
-@app.route("/address/getRegions")
-def address_getRegions():
-    jsonRegions = urllib.request.urlopen('https://b2c.cpost.cz/services/Address/getRegionListAsJson').read()
-    return sorted(json.loads(jsonRegions), key=lambda i: int(i['id']))
 
 @app.route("/address/getDistricts/<int:regionId>")
 def address_getDistricts(regionId):
