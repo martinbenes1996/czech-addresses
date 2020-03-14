@@ -1,33 +1,31 @@
 
-class RegionContext:
-    def __init__(self):
-        self.region_id = None
-        self.region_name = None
+class CityContext:
+    def __init__(self, region_id, district_id):
+        self.region_id = int(region_id)
+        self.district_id = int(district_id)
     def __str__(self):
-        return "<Region \"" + self.region_name + "\">"
-class CityContext(RegionContext):
-    def __init__(self):
-        super().__init__()
-        self.district_id = None
-        self.district_name = None
-        self.city_id = None
-        self.city_name = None
-    def __str__(self):
-        return "<City \"" + self.city_name + "\">"
+        return "<CityContext of region \"" + self.region_id + "\">"
+    def int_or_None(self, identifier):
+        try:
+            return int(id)
+        except:
+            if identifier == None:
+                return None
+        raise Exception("id neither int nor None")
     
 class StreetContext(CityContext):
-    def __init__(self):
-        super().__init__()
-        self.city_part_id = None
-        self.city_part_name = None
-        self.street_id = None
-        self.street_name = None
+    def __init__(self, region_id, district_id, city_id, city_part_id = None):
+        super().__init__(region_id, district_id)
+        self.city_id = int(city_id)
+        self.city_part_id = int(city_part_id)
     def __str__(self):
-        return "<Street \"" + self.street_name + "\">"
+        return "<StreetContext of city \"" + self.city_id + "\">"
+    
 class AddressContext(StreetContext):
-    def __init__(self):
-        super().__init__()
-        self.address_id = None
-        self.address_name = None
+    def __init__(self, region_id, district_id, city_id, city_part_id=None, street_id=None):
+        super().__init__(region_id, district_id, city_id, city_part_id)
+        self.street_id = self.int_or_None(street_id)
     def __str__(self):
-        return "<Address \"" + self.street_name + " " + self.address_name + "\">"
+        return "<Address on \"" + self.street_id + "," + self.city_id + "\">"
+    def streetless(self):
+        return self.street_id == None

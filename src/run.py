@@ -9,14 +9,14 @@ if __name__ == "__main__":
     online.init()
     offline.init()
     #offline.refresh_regions()
-    #offline.refresh_cities()
+    offline.refresh_cities()
     
     
     
-    #regions = offline.fetch_regions()
-    #for region in regions:
-    #    print(region)
+    regions = offline.fetch_regions()
+    for region in regions:
+        print(region)
     
-    cities = offline.fetch_cities(11)
-    for city in cities:
-        print(city)
+    #cities = offline.fetch_cities(11)
+    #for city in cities:
+    #    print(city)
