@@ -21,9 +21,9 @@ def refresh_cities():
 def fetch_regions():
     return db.get_regions()
         
-def fetch_cities(region_id):
-    result = db.get_cities_by_region(region_id)
-    print(result)
+def fetch_cities(region_id=None):
+    result = db.get_cities(region_id)
+    return result
     
     
     
