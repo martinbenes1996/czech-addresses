@@ -120,8 +120,6 @@ def get_post_offices_by_gps(lat, lon, **kwargs): # to make it working call to ce
         seconds = round(abs(x-(degrees + minutes/60))*60,1)
         return f"{degrees}°{minutes}'{seconds}\""
     gps = f"{stringify_gps(lat)}N,{stringify_gps(lon)}E"
-    print(gps)
-    # 49°54'56.4"N,14°09'06.2"E
     response = _request(hostname + '/services/PostOfficeInformation/v2/getDataAsJson', params={"gps": gps, **filters})
     post_offices = response.json()
     return post_offices

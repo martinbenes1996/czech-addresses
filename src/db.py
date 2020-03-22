@@ -5,7 +5,7 @@ import sqlalchemy.orm.session as session
 
 import context
 
-Region,City = None,None
+Region,City,Street,Address = None,None,None,None
 
 class Session:
     SessionGenerator = None
@@ -60,6 +60,12 @@ def init():
     # City
     global City
     City = sqlalchemy.Table("city", metadata, autoload=True, autoload_with=engine)
+    # Street
+    global Street
+    Street = sqlalchemy.Table("street", metadata, autoload=True, autoload_with=engine)
+    # address
+    global Adress
+    Address = sqlalchemy.Table("address", metadata, autoload=True, autoload_with=engine)
 
 def get_regions():
     with Session() as s:

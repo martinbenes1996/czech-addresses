@@ -24,8 +24,11 @@ import onlineData as online
 def key_required(f):
     @functools.wraps(f)
     def decorated_function(*args, **kwargs):
-        if request.args.get('key') and request.args.get('key') == "abcd":
-            return f(*args, **kwargs)
+        try:
+            if request.args['key'] == "abcd":
+                return f(*args, **kwargs)
+        except KeyError:
+            return "Missing query parameter \"key\".",400
         time.sleep(3)
         return "Unauthorized.",401
     return decorated_function
@@ -39,9 +42,22 @@ def index():
 @app.route("/posts/gps")
 @key_required
 def gps_posts():
-    print(request.query_string)
-    lat = float(request.args.get('lat'))
-    lon = float(request.args.get('lon'))
+    try:
+        lat = float(request.args['lat'])
+    except KeyError:
+        return "Missing query parameter lat.",400
+    except ValueError:
+        return f"Invalid query parameter lat={request.args['lat']}, must be float.",400
+    except:
+        return "Bad input.",400
+    try:
+        lon = float(request.args['lon'])
+    except KeyError:
+        return "Missing query parameter lon.",400
+    except ValueError:
+        return f"Invalid query parameter lon={request.args['lon']}, must be float.",400
+    except:
+        return "Bad input.",400
     posts = online.locate_posts((lat,lon))
     result = {"posts": posts}
     response = app.response_class(
@@ -49,7 +65,6 @@ def gps_posts():
         status=200,
         mimetype='application/json')
     return response
-    return result
 
 # address api
 #@app.route("/address/getCityCode/<string:cityName>/<int:regionId>")
