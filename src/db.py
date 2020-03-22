@@ -57,10 +57,11 @@ def get_regions():
     with Session() as s:
         q = sqlalchemy.sql.select([Region])
         result = s.execute(q)
-        print(result)
-        for r in result.fetchall():
-            region = {'id': r.id, 'name': r.name}
-            yield region
+        while True:
+            r = result.fetchone()
+            if r is None:
+                break
+            yield {'id': r.id, 'name': r.name}
 
 def get_cities_by_region(region_id):
     regions = []
@@ -72,21 +73,18 @@ def get_cities_by_region(region_id):
             city_context = context.CityContext(r.region_id, r.district_id)
             yield (city, city_context)
         
-def set_city(city, city_context):
-    
+def set_cities(cities, city_context):
     with Session() as s:
         q = sqlalchemy.sql.select([City]).where(
             sqlalchemy.and_(
                 City.c.region_id == city_context.region_id,
-                City.c.district_id == city_context.district_id,
-                sqlalchemy.or_(
-                    City.c.id == city["id"],
-                    City.c.name == city["name"]
-                )              
+                City.c.district_id == city_context.district_id
             )
         )
         result = s.execute(q)
         matches = result.fetchall()
+        print([match for match in matches])
+        exit(0)
         for i,match in enumerate(matches):
             if i > 0:
                 print("Regions: multiple results")
@@ -120,27 +118,28 @@ def set_city(city, city_context):
 
 
 def set_regions(regions):
+    # fetch online update and sort
+    regions = sorted(regions, key=lambda i: i["id"])
+    region_ids = set([region["id"] for region in regions])
+    print("Set regions:")
+    
     with Session() as s:
-        for region in regions:
-            q = sqlalchemy.sql.select([Region]).where(
-                sqlalchemy.or_(
-                    Region.c.name == region["name"],
-                    Region.c.id == region["id"]
-                )
-            )
-            
-            result = s.execute(q1).fetchall()
-            for i,r in enumerate(result):
-                if i > 0:
-                    print("Regions: multiple results")
-                    return
-                if r.id != region["id"]:
-                    r.id = region["id"]
-                if r.name != region["name"]:
-                    r.name = region["name"]
-                s.merge(r)
-            if result is None:
-                print("Add region")
-                q = Region.insert().values(id=region["id"],name=region["name"])
-                s.execute(q)
-            
+        # fetch current from db
+        q = sqlalchemy.sql.select([Region])
+        dbresults = sorted(s.execute(q).fetchall(), key=lambda i: i["id"])
+        dbresult_ids = set([dbresult["id"] for dbresult in dbresults])
+        
+        # insert
+        insert_ids,insert_cnt = region_ids-dbresult_ids,0
+        for r in [r for r in regions if r["id"] in insert_ids]:
+            q = Region.insert().values(**r)
+            s.execute(q)
+            insert_cnt += 1
+        print("|", insert_cnt, "regions inserted.")
+        # update
+        update_ids,update_cnt = dbresult_ids-insert_ids,0
+        for r in [r for r in regions if r["id"] in update_ids]:
+            q = Region.update().where(Region.c.id == r["id"]).values(name=r["name"])
+            s.execute(q)
+            update_cnt += 1
+        print("|", update_cnt, "regions updated.")

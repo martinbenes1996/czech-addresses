@@ -12,10 +12,9 @@ if __name__ == "__main__":
     offline.refresh_cities()
     
     
-    
-    regions = offline.fetch_regions()
-    for region in regions:
-        print(region)
+    #regions = offline.fetch_regions()
+    #for region in regions:
+    #    print(region)
     
     #cities = offline.fetch_cities(11)
     #for city in cities:

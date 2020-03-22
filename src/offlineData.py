@@ -14,14 +14,12 @@ def refresh_regions():
 def refresh_cities():
     regions = db.get_regions()
     for region in regions:
-        cities = online.fetch_cities(region["id"])
-        for city,city_context in cities:
-            db.set_city(city, city_context)
+        cities_generator = online.fetch_cities(region["id"])
+        for cities,city_context in cities_generator:
+            db.set_cities(cities, city_context)
 
 def fetch_regions():
-    regions = db.get_regions()
-    for region in regions:
-        print(region)
+    return db.get_regions()
         
 def fetch_cities(region_id):
     result = db.get_cities_by_region(region_id)

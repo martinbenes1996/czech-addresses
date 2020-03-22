@@ -10,7 +10,7 @@ def init():
 def fetch_regions():
     regions = cpost.get_regions()
     for r in regions:
-        region = {'id': r['id'], 'name': r['name']}
+        region = {'id': int(r['id']), 'name': r['name']}
         yield region
         
 def get_region_name(region_id):
@@ -29,9 +29,9 @@ def fetch_cities(region_id):
     districts = cpost.get_districts(region_id)
     for district in districts:
         cities = cpost.get_cities(district["id"])
-        for city in cities:
-            city_context = context.CityContext(region_id, int(district["id"]))
-            yield {"id": int(city["id"]), "name": city["name"]}, city_context
+        cities_dict = [{"id": int(city["id"]), "name": city["name"]} for city in cities]
+        city_context = context.CityContext(region_id, int(district["id"]))
+        yield cities_dict, city_context
             
 def fetch_streets(street_context):
     if street_context.region_name is None:
