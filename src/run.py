@@ -18,10 +18,11 @@ if __name__ == "__main__":
     
     cities = offline.fetch_cities()
     city_cnt = 0
-    city_ids = set()
+    region_ids,district_ids = set(),set()
     for city,city_context in cities:
-        city_ids.add(city_context.district_id)
+        region_ids.add(city_context.region_id)
+        district_ids.add(city_context.district_id)
         city_cnt += 1
-    
-    print("Districts:", len(city_ids))
+    print("Regions:", len(region_ids))
+    print("Districts:", len(district_ids))
     print("Cities:", city_cnt)
