@@ -1,17 +1,21 @@
 version: '3'
 services:
-    agent:
+    server:
         build: .
-        container_name: cpost_agent
-        command: python /app/run.py
+        container_name: cpost_server
+        command: flask run
         ports:
             - "3000:3000"
+        networks:
+            - network
         volumes:
-            - ./src:/app:ro
-            - ./templates:/templates
+            - ./src:/app
+            - ./templates:/app/templates:ro
         environment:
-            FLASK_APP: routes.py
+            FLASK_APP: /app/routes.py
             FLASK_DEBUG: 1
+            FLASK_RUN_HOST: 0.0.0.0
+            FLASK_RUN_PORT: 3000
     db:
         image: mysql
         container_name: cpost_db
@@ -19,6 +23,8 @@ services:
         restart: always
         ports:
             - "3306:3306"
+        networks:
+            - network
         environment:
             MYSQL_ROOT_PASSWORD: example
             MYSQL_DATABASE: cpost
@@ -29,5 +35,9 @@ services:
             - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 volumes:
     db_datavolume:
+
+networks:
+    network:
+        driver: bridge
 
             

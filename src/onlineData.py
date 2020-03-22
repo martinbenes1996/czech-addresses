@@ -1,5 +1,6 @@
 
 import sys
+from geopy import distance
 sys.path.append(".")
 import czechpost as cpost
 import context
@@ -54,6 +55,16 @@ def fetch_streets(street_context):
             c.street_id = int(street["id"])
             c.street_name = street["name"]
             yield c
+
+def locate_posts(gps):
+    #tetcice = (49.173485, 16.412138)
+    posts = cpost.get_post_offices_by_gps(*gps)
+    posts = sorted(posts,
+        # sort by closeness
+        key=lambda x: distance.great_circle(gps,
+            (x["attributes"]["latitude"],x["attributes"]["longitude"])).km
+    )
+    return posts
 
 
         

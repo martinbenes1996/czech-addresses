@@ -114,9 +114,16 @@ def get_post_offices_by_district_id(district_id, **kwargs):
     return post_offices
 def get_post_offices_by_gps(lat, lon, **kwargs): # to make it working call to ceska posta
     filters = parse_post_offices_filters(kwargs)
-    response = _request(hostname + '/services/PostOfficeInformation/v2/getDataAsJson', params={"gps": f"{lat}{lon}", **filters})
-    post_offices = response.text
-    print(post_offices)
+    def stringify_gps(x):
+        degrees = int(x)
+        minutes = int(abs(x-degrees)*60)
+        seconds = round(abs(x-(degrees + minutes/60))*60,1)
+        return f"{degrees}°{minutes}'{seconds}\""
+    gps = f"{stringify_gps(lat)}N,{stringify_gps(lon)}E"
+    print(gps)
+    # 49°54'56.4"N,14°09'06.2"E
+    response = _request(hostname + '/services/PostOfficeInformation/v2/getDataAsJson', params={"gps": gps, **filters})
+    post_offices = response.json()
     return post_offices
 
 def get_changes_from(date_from=None):
